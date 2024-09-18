@@ -1,0 +1,1 @@
+LICHEE_KERN_DEFCONF := sun50iw10p1smp_r818_dragonboard_defconfig
