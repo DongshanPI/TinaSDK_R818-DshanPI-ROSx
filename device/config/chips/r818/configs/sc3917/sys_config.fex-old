@@ -38,27 +38,12 @@ power_mode		= 3
 ;dldo1_vol							---set dldo1 voltage,mV,500-3500,100mV/step
 ;----------------------------------------------------------------------------------
 [power_sply]
-dcdc3_vol                  = 1001100
-;dram change to 1.1v
-aldo1_vol                  = 1002800
-;aldo1 for AVCC-CSI     
-aldo2_vol                  = 1001800
-;aldo2 1.8V for PE
-aldo3_vol                  = 1001800
-;aldo3 1.8V for PL
+dcdc3_vol                  = 1001200
+aldo3_vol                  = 1003300
 aldo4_vol                  = 1001800
-;aldo4 for vdd18-dram pll avcc
-bldo1_vol                  = 1001800
-;bldo1 1.8V for PG
-bldo2_vol                  = 1001800
-;bldo2 for vdd18-lpddr
-bldo3_vol                  = 1002800
-;bdlo3 2.8V for AFVCC
+bldo2_vol                  = 1002500
 cldo1_vol                  = 1001800
-cldo2_vol                  = 1003300
 cldo3_vol                  = 1003300
-cldo4_vol                  = 1003300
-;cldo4 for LCD, out to 3.3V
 cpusldo_vol                = 100900
 dcdc1_mode                 = 1
 dcdc2_mode                 = 1
@@ -71,9 +56,8 @@ dcdc2_mode                 = 1
 ;----------------------------------------------------------------------------------
 [gpio_bias]
 device_type                = "gpio_bias"
-pl_bias                    = 1800
+pl_bias                    = 3300
 pl_supply                  = "aldo3_vol"
-;pl_bias change to 1800
 pc_bias                    = 1800
 pc_supply                  = "cldo1_vol"
 ;pc_bias                    = 3300
@@ -172,7 +156,7 @@ standby_mode		= 1
 card_ctrl       = 2
 card_high_speed = 1
 card_line       = 8
-sdc_clk          = port:PC5<3><1><3><default>
+sdc_clk         = port:PC5<3><1><3><default>
 sdc_cmd         = port:PC6<3><1><3><default>
 sdc_d0          = port:PC10<3><1><3><default>
 sdc_d1          = port:PC13<3><1><3><default>
@@ -193,8 +177,8 @@ sdc_io_1v8	= 1
 
 [twi_para]
 twi_port        = 0
-twi_scl         = port:PH0<2><default><default><default>
-twi_sda         = port:PH1<2><default><default><default>
+twi_scl         = port:PH14<2><default><default><default>
+twi_sda         = port:PH15<2><default><default><default>
 
 [auto_print]
 auto_print_used = 1
@@ -225,41 +209,37 @@ pll10           = 264
 [dram_para]
 
 dram_clk       = 888
-dram_type      = 8
-dram_dx_odt    = 0x07070707
-dram_dx_dri    = 0x0d0d0d0d
-dram_ca_dri    = 0x0e0e
-dram_para0     = 0x0d0a050c
-dram_para1     = 0x30ea
-dram_para2     = 0x1000
-dram_mr0       = 0x0
-dram_mr1       = 0x34
-dram_mr2       = 0x1b
-dram_mr3       = 0x33
-dram_mr4       = 0x3
-dram_mr5       = 0x0
-dram_mr6       = 0x0
-dram_mr11      = 0x04
-dram_mr12      = 0x72
+dram_type      = 4
+dram_dx_odt    = 0x03030303
+dram_dx_dri    = 0x0c0c0c0c
+dram_ca_dri    = 0x1919
+dram_para0     = 0x12131615
+dram_para1     = 0x60FA
+dram_para2     = 0x0000
+dram_mr0       = 0x840
+dram_mr1       = 0x601
+dram_mr2       = 0x8
+dram_mr3       = 0x0
+dram_mr4       = 0x0
+dram_mr5       = 0x0400
+dram_mr6       = 0x862
+dram_mr11      = 0x0
+dram_mr12      = 0x0
 dram_mr13      = 0x0
-dram_mr14      = 0x7
+dram_mr14      = 0x0
 dram_mr16      = 0x0
 dram_mr17      = 0x0
-dram_mr22      = 0x26
-dram_tpr0      = 0x06060606
-dram_tpr1      = 0x04040404
+dram_mr22      = 0x0
+dram_tpr0      = 0x0
+dram_tpr1      = 0x0
 dram_tpr2      = 0x0
 dram_tpr3      = 0x0
-dram_tpr6      = 0x48000000
-dram_tpr10     = 0x00273333
-dram_tpr11     = 0x241f1923
-dram_tpr12     = 0x14151313
-dram_tpr13     = 0x81d20
-dram_tpr14     = 0x2023211f
-
-
-
-
+dram_tpr6      = 0x0000a000
+dram_tpr10     = 0x002f7777
+dram_tpr11     = 0x0f101511
+dram_tpr12     = 0x0f0f1512
+dram_tpr13     = 0x00001d00
+dram_tpr14     = 0x19191c1c
 
 ;----------------------------------------------------------------------------------
 ;os life cycle para configuration
@@ -314,4 +294,3 @@ nand0_p3 = 0x55aaaa55
 dram_region_mbytes       = 0
 drm_region_mbytes        = 0
 drm_region_start_mbytes  = 0
-

@@ -17,6 +17,15 @@
 		standby_param = &standby_param;
 	};
 
+	reg_usb0_vbus: usb0-vbus {
+		compatible = "regulator-fixed";
+		gpio = <&pio PH 12 1 2 0 0>;
+		regulator-name = "usb0-vbus";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		enable-active-high;
+	};
+
 	reg_usb1_vbus: usb1-vbus {
 		compatible = "regulator-fixed";
 		gpio = <&pio PH 19 1 2 0 1>;
@@ -32,7 +41,7 @@
 
 		Auto-SW-DET {
 			label = "Auto-SW-DET";
-			gpios = <&r_pio PL 10 6 1 1 1>;
+			gpios = <&r_pio PL 9 6 1 1 1>;
 			linux,code = <143>;
 			debounce-interval = <5>;
 			wakeup-source;
@@ -843,7 +852,7 @@
 			clock-frequency = <200000>;
 			pinctrl-0 = <&s_twi1_pins_a>;
 			pinctrl-1 = <&s_twi1_pins_b>;
-			status = "okay";
+			status = "disabled";
 		};
 
 		spi0: spi@05010000 {
@@ -1004,10 +1013,10 @@
  */
 		usbc0:usbc0@0 {
 			device_type = "usbc0";
-			usb_port_type = <0x0>;
+			usb_port_type = <0x2>;
 			usb_detect_type = <0x2>;
 			usb_detect_mode = <0x0>;
-			usb_id_gpio;
+			usb_id_gpio = <&r_pio PL 8 0 0 0xffffffff 0xffffffff>;
 			usb_det_vbus_gpio   = "axp_ctrl";
 			det_vbus_supply = <&usb_power_supply>;
 			usb_regulator_io = "nocare";
@@ -1209,9 +1218,9 @@
 			};
 			sensor0:sensor@0 {
 				device_type = "sensor0";
-				sensor0_mname = "ov8858_r2a_4lane";
+				sensor0_mname = "imx415_mipi";
 				sensor0_twi_cci_id = <2>;
-				sensor0_twi_addr = <0x6c>;
+				sensor0_twi_addr = <0x34>;
 				sensor0_mclk_id = <0>;
 				sensor0_pos = "rear";
 				sensor0_isp_used = <1>;
@@ -1253,9 +1262,9 @@
 				sensor1_dvdd-supply = <&reg_bldo4>;
 				sensor1_dvdd_vol = <1500000>;
 				sensor0_power_en = <>;
-				sensor1_reset = <&pio PE 9 1 0 1 0>;
-				sensor1_pwdn = <&pio PE 8 1 0 1 0>;
-				status	= "disabled";
+				sensor1_reset = <&pio PE 7 1 0 1 0>;
+				sensor1_pwdn = <&pio PE 6 1 0 1 0>;
+				status	= "okay";
 			};
 			vinc0:vinc@0 {
 				vinc0_csi_sel = <0>;
@@ -1277,7 +1286,7 @@
 				vinc1_rear_sensor_sel = <1>;
 				vinc1_front_sensor_sel = <1>;
 				vinc1_sensor_list = <0>;
-				status = "disabled";
+				status = "okay";
 			};
 			vinc2:vinc@2 {
 				vinc2_csi_sel = <1>;
@@ -1582,7 +1591,7 @@ pull up or pull down(default 0), driver level(default 1), data>
 			wlan_power_num = <1>;
 			wlan_power1    = "axp2202-bldo1";
 			wlan_io_regulator = "axp2202-bldo1";
-                        wlan_vccwifi_ctrl    = <&pio PF 3 1 0x1 0x2 0>;
+                        wlan_vccwifi_ctrl    = <&r_pio PL 10 1 0x1 0x2 0>;
                         wlan_regon    = <&r_pio PL 5 1 0x1 0x2 0>;
                         wlan_hostwake = <&r_pio PL 6 6 0x1 0x2 0>;
                         chip_en;
