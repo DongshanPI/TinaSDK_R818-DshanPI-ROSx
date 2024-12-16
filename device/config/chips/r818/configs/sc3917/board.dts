@@ -17,18 +17,8 @@
 		standby_param = &standby_param;
 	};
 
-	reg_usb0_vbus: usb0-vbus {
-		compatible = "regulator-fixed";
-		gpio = <&pio PH 12 1 2 0 0>;
-		regulator-name = "usb0-vbus";
-		regulator-min-microvolt = <5000000>;
-		regulator-max-microvolt = <5000000>;
-		enable-active-high;
-	};
-
 	reg_usb1_vbus: usb1-vbus {
 		compatible = "regulator-fixed";
-		/*gpio = <&pio PH 19 1 2 0 1>;*/
 		regulator-name = "usb1-vbus";
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
@@ -41,7 +31,7 @@
 
 		Auto-SW-DET {
 			label = "Auto-SW-DET";
-			gpios = <&r_pio PL 11 6 1 1 1>;
+			gpios = <&r_pio PL 10 6 1 1 1>;
 			linux,code = <143>;
 			debounce-interval = <5>;
 			wakeup-source;
@@ -87,16 +77,16 @@
 		};
 		pio: pinctrl@0300b000 {
 			twi0_pins_a: twi0@0 {
-				allwinner,pins = "PH0", "PH1";
+				allwinner,pins = "PD22", "PD23";
 				allwinner,pname = "twi0_scl", "twi0_sda";
 				allwinner,function = "twi0";
-				allwinner,muxsel = <2>;
+				allwinner,muxsel = <4>;
 				allwinner,drive = <1>;
 				allwinner,pull = <0>;
 			};
 
 			twi0_pins_b: twi0@1 {
-				allwinner,pins = "PH0", "PH1";
+				allwinner,pins = "PD22", "PD23";
 				allwinner,function = "io_disabled";
 				allwinner,muxsel = <7>;
 				allwinner,drive = <1>;
@@ -153,7 +143,7 @@
 				allwinner,drive = <1>;
 				allwinner,pull = <0>;
 			};
-
+#if 0
 			pwm0_pin_a: pwm0@0 {
 				allwinner,pins = "PD23";
 				allwinner,function = "pwm0";
@@ -189,11 +179,12 @@
 				allwinner,pull = <0>;
 				allwinner,data = <0xffffffff>;
 			};
+#endif
 
 			pwm2_pin_a: pwm2@0 {
 				allwinner,pins = "PD20";
 				allwinner,function = "pwm2";
-				allwinner,muxsel = <0x02>;
+				allwinner,muxsel = <0x03>;
 				allwinner,drive = <0x2>;
 				allwinner,pull = <0>;
 				allwinner,data = <0xffffffff>;
@@ -211,7 +202,7 @@
 			pwm3_pin_a: pwm3@0 {
 				allwinner,pins = "PD21";
 				allwinner,function = "pwm3";
-				allwinner,muxsel = <0x02>;
+				allwinner,muxsel = <0x03>;
 				allwinner,drive = <0x2>;
 				allwinner,pull = <0>;
 				allwinner,data = <0xffffffff>;
@@ -405,74 +396,56 @@
 		*/
 
 		twi0: twi@0x05002000{
-			clock-frequency = <200000>;
+			//clock-frequency = <100000>;
+			clock-frequency = <400000>;
 			pinctrl-0 = <&twi0_pins_a>;
 			pinctrl-1 = <&twi0_pins_b>;
+			twi-for-pmu-supply = <&reg_aldo3>;
+                        //no_suspend = <1>;
+                        twi_drv_used = <1>;
 			status = "okay";
-
-			
-			/*ctp31inch@38 {
-			compatible = "focaltech,fts";	
-			reg = <0x38>;  					
-			focaltech,reset-gpio =<&pio PH 14 1 0 1 0>; 
-			focaltech,irq-gpio = <&pio PH 15 6 0 1 0>; 	
-			focaltech,max-touch-number = <5>;			
-			focaltech,display-coords =  <0 0 480 800>;	 
-			focaltech,have-key;
-			focaltech,key-number = <0>;	
-			status = "okay";
-			}; */
-			ctp@38 {
-				compatible = "focaltech,ft5x_ts";
-				reg = <0x38>;
-				device_type = "ctp";
-				status = "okay";
-				ctp_name = "ft5x_ts";
-				ctp_twi_id = <0x0>;
-				ctp_twi_addr = <0x38>;
-				ctp_screen_max_x = <480>;
-				ctp_screen_max_y = <800>;
-				ctp_revert_x_flag = <0x1>;
-				ctp_revert_y_flag = <0x0>;
-				ctp_exchange_x_y_flag = <0x0>;
-				ctp_int_port = <&pio PH 15 6 1 1 0>;
-				ctp_wakeup = <&pio PH 14 1 1 1 1>; 
-				/* ctp-supply = <&reg_ldoio0>; */
-				/* ctp_power_ldo = "axp803-ldoio0"; */
-				/* ctp_power_ldo_vol = <3300>; */
-		}; 
-
-
+			/* audio: add ac108 capture */
 			/*
-			
-			ctp0 {
-				compatible = "goodix,gt911";
-				reg = <0x5d>;
-				reset-gpios = <&pio PF 1 1 0 1 0>;
-				int-gpios = <&pio PF 6 1 0 1 0>;
-				touchscreen-size-x = <720>;
-				touchscreen-size-y = <1280>;
-				touchscreen-offset-x = <0>;
-				touchscreen-offset-y = <0>;
-				touchscreen-inverted-y = <1>;
-				touchscreen-inverted-x = <0>;
-				touchscreen-swapped-x-y = <0>;
-				status = "okay";
-			}; 
-			ctp0 {
-				compatible = "focaltech,ft5x_ts";
+                        ac108@3B {
+				compatible = "Allwinner,MicArray_0";
+				device_type = "MicArray_0";
+				reg = <0x3B>;
+				regulator_used = <0x0>;
+				power_gpio_used = <0x0>;
+				reset_gpio_used = <0x0>;
+				twi_bus = <0x1>;
+				pga_gain = <0x1F>;
+				slot_width = <0x20>;
+				lrck_period = <0x80>;
+				ref_pga_used = <0x1>;
+				ref_pga_gain = <0x10>;
+				ref_channel = <0x3>;
+				debug_mode = <0x0>;
+			};
+			*/
+
+			ctp@38 {
+				compatible = "focaltech,fts";
 				reg = <0x38>;
-				reset-gpios = <&pio PH 14 1 0 1 0>;
-				int-gpios = <&pio PH 15 6 0 1 0>;
-				touchscreen-size-x = <480>;
-				touchscreen-size-y = <800>;
-				touchscreen-offset-x = <0>;
-				touchscreen-offset-y = <0>;
-				touchscreen-inverted-y = <0>;
-				touchscreen-inverted-x = <0>;
-				touchscreen-swapped-x-y = <0>;
 				status = "okay";
-			};*/
+				interrupt-parent = <&pio>;
+				interrupts = <PH 12 IRQ_TYPE_LEVEL_LOW>;
+				focaltech,reset-gpio = <&pio PH 11 GPIO_ACTIVE_HIGH>;
+				focaltech,irq-gpio = <&pio PH 12 IRQ_TYPE_LEVEL_LOW>;
+				focaltech,max-touch-number = <5>;
+    				//focaltech,display-coords = <0 0 800 480>;
+				focaltech,display-coords = <0 0 480 800>;
+    				focaltech,reg_vdd = <0x0000001f>;
+    				focaltech,reg_avdd = <0x0000001f>;
+				//focaltech,reg_vdd = <&reg_3v3>;
+				//focaltech,reg_avdd = <&reg_3v3>;
+			};
+
+			lt8912b@48 {
+				compatible = "lt,lt8912b";
+				reg = <0x48>;
+				status = "disabled";
+			};
 
 		};
 
@@ -480,7 +453,7 @@
 			clock-frequency = <200000>;
 			pinctrl-0 = <&twi1_pins_a>;
 			pinctrl-1 = <&twi1_pins_b>;
-			status = "okay";
+			status = "disabled";
 			ac107@36 {
 				compatible = "Allwinnertech,ac107_0";
 				gpio-reset = "null";
@@ -498,7 +471,7 @@
 			twi_drv_used = <1>;
 			/* twi-supply = <&reg_dldo2>; */
 			/* status = "okay"; */
-			status = "okay";
+			status = "disabled";
 		};
 
 		twi3: twi@0x05002c00{
@@ -537,10 +510,10 @@
 				usb_power_supply: usb_power_supply {
 					compatible = "x-powers,axp2202-usb-power-supply";
 
-					pmu_usbpc_vol = <4400>;
-					pmu_usbpc_cur = <1000>;
+					pmu_usbpc_vol = <4600>;
+					pmu_usbpc_cur = <500>;
 					pmu_usbad_vol = <4000>;
-					pmu_usbad_cur = <1000>;
+					pmu_usbad_cur = <2500>;
 
 					pmu_boost_vol = <5126>;
 					pmu_bc12_en;
@@ -571,9 +544,9 @@
 
 					pmu_battery_rdc= <147>;
 					pmu_battery_cap = <1771>;
-					pmu_runtime_chgcur = <500>;
-					pmu_suspend_chgcur = <1000>;
-					pmu_shutdown_chgcur = <1000>;
+					pmu_runtime_chgcur = <1000>;
+					pmu_suspend_chgcur = <1500>;
+					pmu_shutdown_chgcur = <1500>;
 					pmu_terminal_chgcur = <128>;
 					pmu_init_chgvol = <4200>;
 					pmu_battery_warning_level1 = <15>;
@@ -614,10 +587,15 @@
 					pmu_bat_para32 = <100>;
 
 					pmu_bat_temp_enable = <0>;
+					pmu_jetia_en        = <0>;
 					pmu_bat_charge_ltf = <1105>;
 					pmu_bat_charge_htf = <121>;
 					pmu_bat_shutdown_ltf = <1381>;
 					pmu_bat_shutdown_htf = <89>;
+					pmu_jetia_cool = <722>;
+					pmu_jetia_warm = <196>;
+					pmu_jcool_ifall = <1>;
+					pmu_jwarm_ifall = <1>;
 					pmu_bat_temp_para1 = <2814>;
 					pmu_bat_temp_para2 = <2202>;
 					pmu_bat_temp_para3 = <1737>;
@@ -653,7 +631,7 @@
 					pmu_powkey_off_func = <0>;
 					pmu_powkey_off_en = <1>;
 					pmu_powkey_long_time = <1500>;
-					pmu_powkey_on_time = <100>; /*mango 512 to 100*/
+					pmu_powkey_on_time = <512>;
 					wakeup_rising;
 					wakeup_falling;
 					status = "okay";
@@ -760,16 +738,12 @@
 						regulator-min-microvolt = <500000>;
 						regulator-max-microvolt = <3500000>;
 						regulator-enable-ramp-delay = <1000>;
-						regulator-boot-on;
-						regulator-always-on;						
 					};
 					reg_cldo2: cldo2 {
 						regulator-name = "axp2202-cldo2";
-						regulator-min-microvolt = <3300000>;
-						regulator-max-microvolt = <3300000>;
+						regulator-min-microvolt = <500000>;
+						regulator-max-microvolt = <3500000>;
 						regulator-enable-ramp-delay = <1000>;
-						regulator-boot-on;
-						regulator-always-on;
 					};
 					reg_cldo3: cldo3 {
 						regulator-name = "axp2202-cldo3";
@@ -947,23 +921,33 @@
 				status = "disabled";
 			};
 		};
-
 		pwm0: pwm0@0300a000 {
 			pinctrl-names = "active", "sleep";
+			status = "disabled";
+#if 0
 			pinctrl-0 = <&pwm0_pin_a>;
 			pinctrl-1 = <&pwm0_pin_b>;
+#endif
 		};
 
 		pwm1: pwm1@0300a000 {
 			pinctrl-names = "active", "sleep";
+			status = "disabled";
+#if 0
 			pinctrl-0 = <&pwm1_pin_a>;
 			pinctrl-1 = <&pwm1_pin_b>;
+#endif
 		};
+		pwm2: pwm2@0300a000 {
+                        pinctrl-names = "active", "sleep";
+                        pinctrl-0 = <&pwm2_pin_a>;
+                        pinctrl-1 = <&pwm2_pin_b>;
+                };
 
 		ledc: ledc@0x05018000 {
 			pinctrl-0 = <&ledc_pins_a>;
 			pinctrl-1 = <&ledc_pins_b>;
-			status	  = "okay"; /* mango */
+			status	  = "disabled";
 		};
 
 		gpadc:gpadc{
@@ -979,6 +963,18 @@
 			status = "disabled";
 		};
 
+		gmac0: eth@05020000{
+                        phy-mode = "rgmii";
+                        use_ephy25m = <0>;
+                        phy-rst = <&pio PH 19 GPIO_ACTIVE_HIGH>;
+                        tx-delay = <0>;
+                        rx-delay = <0>;
+                        gmac-power0;
+                        gmac-power1;
+                        gmac-power2;
+                        status = "okay";
+                };
+
 		sdc2: sdmmc@04022000 {
 			non-removable;
 			bus-width = <8>;
@@ -992,7 +988,7 @@
 			sunxi-power-save-mode;
 			sunxi-dis-signal-vol-sw;
 			max-frequency = <100000000>;
-			vmmc-supply = <&reg_cldo1>; /* mango fix to 1.8v*/
+			vmmc-supply = <&reg_cldo3>;
 			/* emmc io vol 3.3v */
 			/* vqmmc-supply = <&reg_aldo1>; */
 			/*emmc io vol 1.8v*/
@@ -1005,27 +1001,27 @@
 			cd-gpios = <&pio PF 6 6 1 3 0xffffffff>;
 			/*non-removable;*/
 			/*broken-cd;*/
-			/*cd-inverted*/
+			/*cd-inverted;*/
 			/*data3-detect;*/
 			/*card-pwr-gpios = <&pio PH 14 1 1 2 0xffffffff>;*/
 			cd-used-24M;
 			cap-sd-highspeed;
-			sd-uhs-sdr50;
-			sd-uhs-ddr50;
-			sd-uhs-sdr104;
+			/*sd-uhs-sdr50;*/
+			/*sd-uhs-ddr50;*/
+			/*sd-uhs-sdr104;*/
 			no-sdio;
 			no-mmc;
 			sunxi-power-save-mode;
 			/*sunxi-dis-signal-vol-sw;*/
 			max-frequency = <150000000>;
 			ctl-spec-caps = <0x8>;
-			/*
-			vmmc-supply = <&reg_dcdc1>;
+			
+			/*vmmc-supply = <&reg_dcdc1>;
 			vqmmc33sw-supply = <&reg_dcdc1>;
 			vdmmc33sw-supply = <&reg_dcdc1>;
 			vqmmc18sw-supply = <&reg_eldo1>;
-			vdmmc18sw-supply = <&reg_eldo1>;
-			*/
+			vdmmc18sw-supply = <&reg_eldo1>;*/
+			
 			status = "disabled";
 		};
 
@@ -1041,7 +1037,6 @@
 			/*sd-uhs-sdr104*/
 			/*sunxi-power-save-mode;*/
 			/*sunxi-dis-signal-vol-sw;*/
-			sdio-used-1v8;
 			cap-sdio-irq;
 			keep-power-in-suspend;
 			ignore-pm-notify;
@@ -1059,10 +1054,10 @@
  */
 		usbc0:usbc0@0 {
 			device_type = "usbc0";
-			usb_port_type = <0x2>;
+			usb_port_type = <0x0>;
 			usb_detect_type = <0x2>;
 			usb_detect_mode = <0x0>;
-			usb_id_gpio = <&r_pio PH 17 0 0 0xffffffff 0xffffffff>;
+			//usb_id_gpio;
 			usb_det_vbus_gpio   = "axp_ctrl";
 			det_vbus_supply = <&usb_power_supply>;
 			usb_regulator_io = "nocare";
@@ -1119,7 +1114,7 @@
 			/* Pa enabled about */
 			pa_level 	= <0x01>;
 			pa_msleep_time 	= <0xa0>;
-			gpio-spk;/* = <&pio PF 2 1 1 1 1>; */
+			gpio-spk = <&pio PF 2 1 1 1 1>;
 			/* regulator about */
 			avcc-supply = <&reg_aldo4>;
 			cpvin-supply = <&reg_cldo1>;
@@ -1131,26 +1126,26 @@
 		};
 
 		sndcodec:sound@0 {
-		/*	extcon = <&usb_power_supply>;
-			usb_switch_sel = <&pio PF 0 1 1 1 1>; */
+			extcon = <&usb_power_supply>;
+			usb_switch_sel = <&pio PF 0 1 1 1 1>;
 			status = "okay";
 		};
 
 		spdif:spdif-controller@0x05094000{
-			status = "disabled";
+			status = "okay";
 		};
 
 		sndspdif:sound@1{
-			status = "disabled";
+			status = "okay";
 		};
 
 		dmic:dmic-controller@0x05095000{
-		/*	audio-33 = "axp2202-aldo3"; */
-			status = "disabled";
+			audio-33 = "axp2202-aldo3";
+			status = "okay";
 		};
 
 		snddmic:sound@2{
-			status = "disabled";
+			status = "okay";
 		};
 
 		daudio0:daudio@0x05090000 {
@@ -1172,7 +1167,7 @@
 			audio_format 	= <0x01>;
 			daudio_master 	= <0x04>;
 			signal_inversion  = <0x01>;
-			status = "disabled";
+			status = "okay";
 		};
 
 		daudio1:daudio@0x05091000 {
@@ -1403,8 +1398,8 @@ chn_cfg_mode     : Hardware DE channel allocation config. 0:single display with 
 			screen0_output_type      = <1>;
 			screen0_output_mode      = <4>;
 
-			screen1_output_type      = <1>;
-			screen1_output_mode      = <4>;
+			screen1_output_type      = <3>;
+			screen1_output_mode      = <10>;
 
 			screen1_output_format    = <0>;
 			screen1_output_bits      = <0>;
@@ -1439,75 +1434,13 @@ chn_cfg_mode     : Hardware DE channel allocation config. 0:single display with 
 
 			disp_para_zone           = <1>;
 			/*VCC-LCD*/
-			cldo4-supply 		= <&reg_cldo4>;
+			bldo3-supply 		= <&reg_bldo3>;
 			/*VCC-IO*/
 			cldo1-supply 		= <&reg_cldo1>;
 			/* dc1sw-supply = <&reg_dc1sw>; */
 			/*VCC-DSI*/
 			/*VCC-PD*/
 			/*dcdc1-supply = <&reg_dcdc1>;*/
-		};
-/*----------------------------------------------------------------------------
-*tps65185
-*-----------------------------------------------------------------------------
-*tps65185 ic wakeup&vcom
-*-----------------------------------------------------------------------------*/
-		tps65185: tps65185@68 {
-			tps65185_used             = <0>;
-			tps65185_name             = "tps65185";
-			tps65185_twi_id           = <0>;
-			tps65185_twi_addr         = <0x68>;
-			tps65185_wakeup           = <&pio PH 13 1 1 3 1>;
-			tps65185_vcom             = <&pio PH 12 1 1 3 1>;
-			tps65185_powerup          = <&pio PD 23 1 1 3 0>;
-			/* dc1sw-supply		  = <&reg_dc1sw>; */
-			tps65185_ldo		  = "dc1sw";
-		};
-
-		tps65185_slave: tps65185_slave@68 {
-			tps65185_used             = <0>;
-			tps65185_name             = "tps65185_slave";
-			tps65185_twi_id           = <1>;
-			tps65185_twi_addr         = <0x68>;
-			/* the follow gpio is shared with master tps65185 */
-		/*	tps65185_wakeup           = port:PH06<1><1><3><1>
-			tps65185_vcom             = port:PB08<1><1><3><1>
-			tps65185_powerup          = port:PH04<1><1><3><0>
-			tps65185_powergood        = port:PD23<0><1><3><1>
-			tps65185_int              = port:PH05<6><default><3><default>
-			tps65185_ldo              = "vcc-pmic1"
-			*/
-		};
-/*----------------------------------------------------------------------------------
- */
-		eink: eink@06400000 {
-			eink_panel_name     = "default_eink";
-			eink_scan_mode      = <0>;
-			eink_width          = <1024>;
-			eink_height         = <758>;
-			eink_bits           = <5>;
-			eink_data_len       = <8>;
-			eink_lsl            = <6>;
-			eink_lbl            = <6>;
-			eink_lel            = <38>;
-			eink_fsl            = <2>;
-			eink_fbl            = <4>;
-			eink_fel            = <5>;
-			eink_lgonl          = <262>;
-			eink_gdck_sta       = <4>;
-			eink_gdoe_start_line= <2>;
-			eink_fresh_hz       = <85>;
-			eink_gray_level     = <16>;
-			eink_wav_path       = "/system/default_8_5.awf";
-			vcom_path           = "/system/vcom.bin";
-			/*VCC-LCD*/
-			/* dc1sw-supply	    = <&reg_dc1sw>; */
-			/*VCC-PD*/
-			dcdc1-supply	    = <&reg_dcdc1>;
-			eink_pin_power	    = "dcdc1";
-			/* eink_power	    = "dc1sw"; */
-			pinctrl-0	    = <&eink_pins_a>;
-			pinctrl-1	    = <&eink_pins_b>;
 		};
 /*----------------------------------------------------------------------------------
 ;lcd0 configuration
@@ -1567,116 +1500,114 @@ pull up or pull down(default 0), driver level(default 1), data>
 ;For lvds1: use lvds1_pins_a  and lvds1_pins_b instead
 ;For lvds0: use lvds0_pins_a  and lvds0_pins_b instead
 ;----------------------------------------------------------------------------------*/
-		
-		lcd0: lcd0@01c0c000 {
-			lcd_used            = <1>;
-
-			lcd_driver_name     = "t050k589";
-			lcd_backlight       = <100>;
-			lcd_if              = <4>;
-
-			lcd_x               = <480>;
-			lcd_y               = <800>;
-			lcd_width           = <40>;
-			lcd_height          = <60>;
-			lcd_dclk_freq       = <27>;
-
-			lcd_pwm_used        = <1>;
-			lcd_pwm_ch          = <0>;
-			lcd_pwm_freq        = <50000>;
-			lcd_pwm_pol         = <0>;
-			lcd_pwm_max_limit   = <255>;
-
-
-			lcd_hbp             = <70>;
-			lcd_ht              = <600>;
-			lcd_hspw            = <10>;
-			lcd_vbp             = <36>;
-			lcd_vt              = <956>;
-			lcd_vspw            = <4>;
-
-			lcd_dsi_lane        = <2>;
-			lcd_lvds_if         = <0>;
-			lcd_lvds_colordepth = <0>;
-			lcd_lvds_mode       = <0>;
-			lcd_frm             = <0>;
-			lcd_hv_clk_phase    = <0>;
-			lcd_hv_sync_polarity= <0>;
-			lcd_gamma_en        = <0>;
-			lcd_bright_curve_en = <0>;
-			lcd_cmap_en         = <0>;
-			lcd_fsync_en        = <0>;
-			lcd_fsync_act_time  = <1000>;
-			lcd_fsync_dis_time  = <1000>;
-			lcd_fsync_pol       = <0>;
-
-			deu_mode            = <0>;
-			lcdgamma4iep        = <22>;
-			smart_color         = <90>;
-
-			/*VCC-LCD*/
-			lcd_power	    = "cldo4";
-
-			/* reset pin */
-			lcd_gpio_0	    = <&pio PD 22 1 0 3 1>;
-			pinctrl-0 = <&dsi4lane_pins_a>;
-        	pinctrl-1 = <&dsi4lane_pins_b>;
-
-		};
-		
-                wlan: wlan@0 {
+		wlan: wlan@0 {
                         compatible    = "allwinner,sunxi-wlan";
                         clocks        = <&clk_losc_out>;
                         pinctrl-0;
                         pinctrl-names;
-                        wlan_busnum    	= <0x1>;
-						wlan_power 		= "axp2202-bldo1";
-						wlan_io_regulator;
-                      /*  wlan_power_voltage;  = <3300000>; 
-                        wlan_io_voltage = <1800000>;  mango */
-                        wlan_regon    = <&r_pio PL 5 1 0x1 0x2 0>; /*PL9 to PL5 */
-                        wlan_hostwake = <&r_pio PL 8 6 0x1 0x2 0>; /* PL10 to PL8 */
+                        wlan_busnum    = <0x1>;
+                        wlan_power_voltage = <3300000>;
+                        wlan_io_voltage = <1800000>;
+                        wlan_power_num = <1>;
+                        wlan_power1    = "axp2202-dcdc4";
+                        wlan_io_regulator = "axp2202-bldo1";
+                        //wlan_power              = "axp2202-bldo1";
+                        //wlan_io_regulator;
+
+                        wlan_regon    = <&r_pio PL 5 1 0x1 0x2 0>;
+                        wlan_hostwake = <&r_pio PL 8 6 0x1 0x2 0>;
                         chip_en;
                         power_en;
                         status        = "okay";
                         wakeup-source;
                 };
-/*
+#if 1
+		lcd0: lcd0@01c0c000 {
+                        lcd_used            = <1>;
+                        lcd_driver_name     = "tft08006";
+
+                        lcd_if              = <4>;
+
+                        lcd_x               = <480>;
+                        lcd_y               = <800>;
+                        lcd_width           = <52>;
+                        lcd_height          = <52>;
+                        lcd_dclk_freq       = <25>;
+
+
+                        lcd_backlight       = <100>;
+                        lcd_pwm_used        = <1>;
+                        lcd_pwm_ch          = <2>;
+                        lcd_pwm_freq        = <50000>;
+                        lcd_pwm_pol         = <0>;
+                        lcd_pwm_max_limit   = <255>;
+                        lcd_bl_en           = <&pio PD 20 1 0 3 1>;
+
+
+                        lcd_hbp             = <10>;
+                        lcd_ht              = <515>;
+                        lcd_hspw            = <5>;
+                        lcd_vbp             = <20>;
+                        lcd_vt              = <830>;
+                        lcd_vspw            = <5>;
+
+                        lcd_dsi_if          = <0>;
+                        lcd_dsi_lane        = <2>;
+                        lcd_dsi_format      = <0>;
+                        lcd_dsi_te          = <0>;
+                        lcd_dsi_eotp        = <0>;
+
+                        lcd_frm             = <0>;
+                        lcd_io_phase        = <0x0000>;
+                        lcd_gamma_en        = <0>;
+                        lcd_bright_curve_en = <0>;
+                        lcd_cmap_en         = <0>;
+
+			deu_mode            = <0>;
+                        lcdgamma4iep        = <22>;
+                        smart_color         = <90>;
+
+                        /*VCC-LCD*/
+                        //lcd_pin_power = "dcdc1";
+                        //lcd_pin_power1 = "eldo3";
+                        //lcd_power = "dc1sw";
+                        //lcd_power         = "bldo3";
+                        /*VCC-IO*/
+                        //lcd_power1        = "cldo1";
+                        /* reset pin */
+                        lcd_gpio_0          = <&pio PB 8 1 0 3 1>;
+                        pinctrl-0 = <&dsi4lane_pins_a>;
+                        pinctrl-1 = <&dsi4lane_pins_b>;
+
+                };		
+#endif
+
+#if 0		
 		lcd0: lcd0@01c0c000 {
 			lcd_used            = <1>;
-			lcd_driver_name     = "t050k589";
 
+			lcd_driver_name     = "panel-lt8912b-hdmi";
+			//lcd_driver_name     = "default_lcd";
+			lcd_backlight       = <255>;
 			lcd_if              = <4>;
 
-			lcd_x               = <720>;
-			lcd_y               = <1280>;
-			lcd_width           = <62>;
-			lcd_height          = <110>;
-			lcd_dclk_freq       = <61>;
+			lcd_x               = <1920>;
+			lcd_y               = <1080>;
+			lcd_dclk_freq       = <148>;
 
-			lcd_backlight       = <50>;
-			lcd_pwm_used        = <1>;
-			lcd_pwm_ch          = <0>;
-			lcd_pwm_freq        = <50000>;
-			lcd_pwm_pol         = <1>;
-			lcd_pwm_max_limit   = <255>;
+			lcd_hbp             = <192>;
+			lcd_ht              = <2200>;
+			lcd_hspw            = <44>;
+			lcd_vbp             = <41>;
+			lcd_vt              = <1125>;
+			lcd_vspw            = <5>;
 
-
-			lcd_hbp             = <32>;
-			lcd_ht              = <780>;
-			lcd_hspw            = <8>;
-			lcd_vbp             = <12>;
-			lcd_vt              = <1304>;
-			lcd_vspw            = <4>;
-
-			lcd_dsi_if	    = <0>;
 			lcd_dsi_lane        = <4>;
+			lcd_dsi_if          = <0>;
 			lcd_dsi_format      = <0>;
-			lcd_dsi_te	    = <0>;
-			lcd_dsi_eotp	    = <0>;
-
+			lcd_dsi_te          = <0>;
 			lcd_frm             = <0>;
-			lcd_io_phase        = <0x0000>;
+			lcd_io_phase        = <0>;
 			lcd_gamma_en        = <0>;
 			lcd_bright_curve_en = <0>;
 			lcd_cmap_en         = <0>;
@@ -1685,70 +1616,33 @@ pull up or pull down(default 0), driver level(default 1), data>
 			lcdgamma4iep        = <22>;
 			smart_color         = <90>;
 
-			VCC-LCD
-			lcd_power	    = "bldo3";
-			VCC-IO
-			lcd_power1	    = "cldo1";
-			 reset pin 
-			lcd_gpio_0	    = <&pio PD 22 1 0 3 1>;
+			//lcd_gpio_0 = <&pio PH 11 1 0 3 1>;
 			pinctrl-0 = <&dsi4lane_pins_a>;
-        		pinctrl-1 = <&dsi4lane_pins_b>;
+			pinctrl-1 = <&dsi4lane_pins_b>;
+		};
+#endif
 
-		}; */
-		
-/*
-				compatible = "focaltech,ft5x_ts";
-				reg = <0x38>;
-				reset-gpios = <&pio PH 14 1 0 1 0>;
-				int-gpios = <&pio PH 15 6 0 1 0>;
-				touchscreen-size-x = <480>;
-				touchscreen-size-y = <800>;
-				touchscreen-offset-x = <0>;
-				touchscreen-offset-y = <0>;
-				touchscreen-inverted-y = <0>;
-				touchscreen-inverted-x = <0>;
-				touchscreen-swapped-x-y = <0>;
-				status = "okay";
-			}; */
-	/*
-		ctp {
-				device_type = "ctp";
-				compatible = "focaltech,ft5x_ts";
-				reg = <0x38>;
-				status = "okay";
-				ctp_name = "ft5x_ts";
-				ctp_twi_id = <0x0>;
-				ctp_twi_addr = <0x38>;
-				ctp_screen_max_x = <480>;
-				ctp_screen_max_y = <800>;
-				ctp_revert_x_flag = <0x1>;
-				ctp_revert_y_flag = <0x0>;
-				ctp_exchange_x_y_flag = <0x0>;
-				ctp_int_port = <&pio PH 15 6 1 1 0>;
-				ctp_wakeup = <&pio PH 14 1 1 1 1>; 
-				/* ctp-supply = <&reg_ldoio0>; */
-				/* ctp_power_ldo = "axp803-ldoio0"; */
-				/* ctp_power_ldo_vol = <3300>; */
-	/*	}; */
-
-                bt: bt@0 {
+		bt: bt@0 {
                         compatible    = "allwinner,sunxi-bt";
                         clocks        = <&clk_losc_out>;
+                        //bt_power_num = <0x01>;
                         bt_power = "axp2202-bldo1";
-						bt_io_regulator;
+                        bt_io_regulator;
+
                         /* bt_power1      = "axp803-dldo1"; */
-                        /* bt_io_regulator = "axp803-dldo1"; 
+                        /* bt_io_regulator = "axp803-dldo1";
                         bt_io_voltage = <3300000>;
                         bt_power_voltage = <330000>;*/
-                        bt_rst_n      = <&r_pio PL 2 1 0x1 0x2 0>; /* PL3 to PL2 */
+
+                        bt_rst_n      = <&r_pio PL 2 1 0x1 0x2 0>;
                         status        = "okay";
                 };
 
 		btlpm: btlpm@0 {
 			compatible  = "allwinner,sunxi-btlpm";
 			uart_index  = <0x1>;
-			bt_wake     = <&r_pio PL 4 1 0x1 0x2 1>; /* PL8 to PL4 */ 
-			bt_hostwake = <&r_pio PL 3 6 0x1 0x2 1>; /* PL7 to PL3 */
+			bt_wake     = <&r_pio PL 4 1 0x1 0x2 1>;
+			bt_hostwake = <&r_pio PL 3 6 0x1 0x2 1>;
 			status      = "okay";
 		};
 
