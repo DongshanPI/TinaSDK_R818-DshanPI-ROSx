@@ -1,0 +1,62 @@
+#!/bin/sh
+
+case "$1" in
+	start)
+		modpath=/lib/modules/$(uname -r)
+		while IFS= read -r m; do
+			[ -n "$(echo $m | grep '^\s*#')" ] && continue
+			[ -f "$modpath/$m" ] && /sbin/insmod $modpath/$m
+		done <<- END
+			# insmod dump reg
+			dump_reg.ko
+			dump_reg_misc.ko
+			# insmod usb
+			ehci-hcd.ko
+			ehci-pci.ko
+			ohci-hcd.ko
+			ohci-pci.ko
+			sunxi-hci.ko
+			ehci-sunxi.ko
+			ohci-sunxi.ko
+			sunxi_usb_udc.ko
+			sunxi_usbc.ko
+			usbhid.ko
+			# insmod spi
+			spi-sunxi.ko
+			# insmod pwm
+			pwm-sunxi-g_dev.ko
+			pwm-sunxi-group.ko
+			# insmod lradc
+			sunxi-keyboard.ko
+			# insmod audio
+			snd-soc-sunxi.ko
+			snd-soc-simple-card-utils.ko
+			snd-soc-sunxi-simple-card.ko
+			# insmod audio-codec
+			snd_soc_sunxi_component_jack.ko
+			snd-soc-sunxi-dummy-cpudai.ko
+			sun50iw10-codec.ko
+			sun50iw10-sndcodec.ko
+			# insmod audio-spdif
+			snd-soc-sunxi-spdif.ko
+			# insmod audio-dmic
+			snd-soc-dmic.ko
+			snd-soc-sunxi-dmic.ko
+			# insmod audio-audio
+			snd-soc-sunxi-daudio.ko
+			# insmod xxx
+END
+		;;
+	stop)
+		;;
+	restart|reload)
+		"$0" stop
+		"$0" start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit $?
+

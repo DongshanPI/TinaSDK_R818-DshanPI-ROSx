@@ -1,1 +1,0 @@
-cmd_drivers/net/wireless/aic8800/aic8800_fdrv/built-in.o :=  rm -f drivers/net/wireless/aic8800/aic8800_fdrv/built-in.o; aarch64-openwrt-linux-gnu-ar rcsD drivers/net/wireless/aic8800/aic8800_fdrv/built-in.o

@@ -1,0 +1,2 @@
+LICHEE_BOARD:=b6
+KERNEL_BRANCH:=sunxi-dev-aosp

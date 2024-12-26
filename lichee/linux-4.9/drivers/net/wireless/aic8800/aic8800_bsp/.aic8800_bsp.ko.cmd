@@ -1,1 +1,0 @@
-cmd_drivers/net/wireless/aic8800/aic8800_bsp/aic8800_bsp.ko := aarch64-openwrt-linux-gnu-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o drivers/net/wireless/aic8800/aic8800_bsp/aic8800_bsp.ko drivers/net/wireless/aic8800/aic8800_bsp/aic8800_bsp.o drivers/net/wireless/aic8800/aic8800_bsp/aic8800_bsp.mod.o ;  true
