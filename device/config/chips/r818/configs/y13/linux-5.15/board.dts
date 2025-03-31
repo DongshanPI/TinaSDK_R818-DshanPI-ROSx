@@ -23,7 +23,7 @@
 		regulator-min-microvolt = <5000000>;
 		regulator-max-microvolt = <5000000>;
 		regulator-enable-ramp-delay = <1000>;
-		gpio = <&r_pio PL 8 GPIO_ACTIVE_HIGH>;
+		//gpio = <&r_pio PL 8 GPIO_ACTIVE_HIGH>;
 		enable-active-high;
 	};
 };
@@ -166,7 +166,7 @@
 		wlan_power_vol= <1800000>;
 		wlan_busnum   = <0x1>;
 		wlan_regon    = <&r_pio PL 5 GPIO_ACTIVE_HIGH>;
-		wlan_hostwake = <&r_pio PL 6 GPIO_ACTIVE_HIGH>;
+		wlan_hostwake = <&r_pio PL 8 GPIO_ACTIVE_HIGH>;
 		wakeup-source;
 	};
 
