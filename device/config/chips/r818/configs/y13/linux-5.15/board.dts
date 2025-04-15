@@ -245,25 +245,26 @@
 	cd-gpios = <&pio PF 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 	/*non-removable;*/
 	/*broken-cd;*/
-	/*cd-inverted*/
+	cd-inverted;
 	/*data3-detect;*/
 	/*card-pwr-gpios = <&pio PH 14 1 1 2 0xffffffff>;*/
 	cd-used-24M;
 	cap-sd-highspeed;
-	sd-uhs-sdr50;
+	/*sd-uhs-sdr50;
 	sd-uhs-ddr50;
-	sd-uhs-sdr104;
+	sd-uhs-sdr104;*/
 	no-sdio;
 	no-mmc;
 	sunxi-power-save-mode;
 	/*sunxi-dis-signal-vol-sw;*/
 	max-frequency = <150000000>;
-	ctl-spec-caps = <0x408>;
-	vmmc-supply = <&reg_cldo3>;
+	/*ctl-spec-caps = <0x408>;*/
+	ctl-spec-caps = <0x8>;
+	/*vmmc-supply = <&reg_cldo3>;
 	vqmmc33sw-supply = <&reg_cldo3>;
 	vdmmc33sw-supply = <&reg_cldo3>;
 	vqmmc18sw-supply = <&reg_cldo1>;
-	vdmmc18sw-supply = <&reg_cldo1>;
+	vdmmc18sw-supply = <&reg_cldo1>;*/
 	status = "okay";
 };
 
