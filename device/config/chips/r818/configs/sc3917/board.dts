@@ -1118,7 +1118,7 @@
 			/* regulator about */
 			avcc-supply = <&reg_aldo4>;
 			cpvin-supply = <&reg_cldo1>;
-			status = "okay";
+			status = "disabled";
 		};
 
 		cpudai:cpudai-controller@0x050906000 {
@@ -1128,7 +1128,7 @@
 		sndcodec:sound@0 {
 			extcon = <&usb_power_supply>;
 			usb_switch_sel = <&pio PF 0 1 1 1 1>;
-			status = "okay";
+			status = "disabled";
 		};
 
 		spdif:spdif-controller@0x05094000{
