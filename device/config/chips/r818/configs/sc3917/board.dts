@@ -992,7 +992,7 @@
 			/* emmc io vol 3.3v */
 			/* vqmmc-supply = <&reg_aldo1>; */
 			/*emmc io vol 1.8v*/
-			/* vqmmc-supply = <&reg_eldo1>; */
+			vqmmc-supply = <&reg_cldo1>;
 			status = "okay";
 		};
 
